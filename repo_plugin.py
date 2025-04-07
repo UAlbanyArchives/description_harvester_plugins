@@ -20,7 +20,7 @@ class MyPlugin(Plugin):
     def custom_repository(self, resource):
         from description_harvester.configurator import Config
         
-        print (f"Customizing repository using {resource['id_0']}")
+        #print (f"\tCustomizing repository using {resource['id_0']}")
         
         # custom logic for repository name here and return a string
         id_0 = resource.get('id_0', '').lower()
@@ -34,7 +34,7 @@ class MyPlugin(Plugin):
                 if id_0.startswith(prefix):
                     repo_name = Config.read_repositories(prefix)
                     break
-        print (f"Setting repository as {repo_name}.")
+        #print (f"\tSetting repository as {repo_name}.")
         
         return repo_name
 
