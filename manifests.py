@@ -1,6 +1,6 @@
 from description_harvester.plugins import Plugin
 from description_harvester.iiif_utils import fetch_manifest, enrich_dao_from_manifest
-from urllib.parse import urlparse, urlunparse
+from urllib.parse import urlparse, urlunparse, parse_qs
 import requests
 import yaml
 
@@ -40,8 +40,16 @@ class ManifestsPlugin(Plugin):
         if dao.type == "web_archive":
             # Needs local custom handing for web archives since theres no established way to serve via a manifest
             expected_url = False
+            print (dao.identifier)
             if dao.identifier.strip().lower().startswith("https://media.archives.albany.edu"):
                 parsed = urlparse(dao.identifier.strip())
+                # If the identifier is a viewer URL with a ?manifest= query param
+                # (e.g. https://media.archives.albany.edu/?manifest=... or
+                #  https://media.archives.albany.edu?manifest=...), extract the
+                # actual content URL from the query string before parsing.
+                qs = parse_qs(parsed.query)
+                if "manifest" in qs:
+                    parsed = urlparse(qs["manifest"][0])
                 parts = parsed.path.strip("/").split("/")
 
                 if len(parts) >= 2:
